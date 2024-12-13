@@ -11,8 +11,10 @@ const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
 
+const PORT = process.env.PORT || 3000
+
 //Use .env file in config folder
-require("dotenv").config({ path: "./config/.env" });
+require("dotenv").config();
 
 // Passport config
 require("./config/passport")(passport);
@@ -58,6 +60,7 @@ app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 
 //Server Running
-app.listen(process.env.PORT, () => {
-  console.log("Server is running, you better catch it!");
-});
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB')
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+})
