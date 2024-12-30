@@ -11,6 +11,12 @@ const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
 const commentRoutes = require("./routes/comments");
+const cloudinary = require('cloudinary').v2
+
+const PORT = process.env.PORT || 3000
+
+//Connect To Database
+connectDB();
 
 //Use .env file in config folder
 require("dotenv").config({ path: "./config/.env" });
@@ -18,8 +24,6 @@ require("dotenv").config({ path: "./config/.env" });
 // Passport config
 require("./config/passport")(passport);
 
-//Connect To Database
-connectDB();
 
 //Using EJS for views
 app.set("view engine", "ejs");
@@ -60,6 +64,7 @@ app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 
 //Server Running
-app.listen(process.env.PORT, () => {
-  console.log("Server is running, you better catch it!");
-});
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB')
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+})
