@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//comment model for mongodb
 const CommentSchema = new mongoose.Schema({
   commentText: {
     type: String,
