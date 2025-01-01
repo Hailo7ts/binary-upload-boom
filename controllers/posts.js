@@ -1,8 +1,12 @@
+//import cloudinary model for post
 const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/Post"); 
 const Comment = require("../models/Comment");
 
+//export post controllers
 module.exports = {
+
+//reads posts and render
   getProfile: async (req, res) => {
     try {
       const posts = await Post.find({ user: req.user.id });
@@ -28,11 +32,14 @@ module.exports = {
       console.log(err);
     }
   },
+
+//create posts
   createPost: async (req, res) => {
     try {
       // Upload image to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path);
 
+      //input to create post
       await Post.create({
         title: req.body.title,
         image: result.secure_url,
@@ -47,6 +54,8 @@ module.exports = {
       console.log(err);
     }
   },
+
+//update posts
   likePost: async (req, res) => {
     try {
       await Post.findOneAndUpdate(
@@ -61,6 +70,8 @@ module.exports = {
       console.log(err);
     }
   },
+
+//update posts
   deletePost: async (req, res) => {
     try {
       // Find post by id

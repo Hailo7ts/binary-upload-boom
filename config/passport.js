@@ -1,9 +1,13 @@
+//import authentication mongoose and user model
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const User = require("../models/User");
 
+
+//export hash and salt
 module.exports = function (passport) {
   passport.use(
+    //validating email and password
     new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
       try {
         const user = await User.findOne({ email: email.toLowerCase() });
@@ -31,16 +35,18 @@ module.exports = function (passport) {
     })
   );
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
 
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await User.findById(id);
-      done(null, user);
-    } catch (err) {
-      done(err, null);
-    }
-  });
+  //hash and salt
+    passport.serializeUser((user, done) => {
+      done(null, user.id);
+    });
+
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await User.findById(id);
+        done(null, user);
+      } catch (err) {
+        done(err, null);
+      }
+    });
 };

@@ -1,7 +1,9 @@
+//import for validation user properties
 const passport = require("passport");
 const validator = require("validator");
 const User = require("../models/User");
 
+//login page
 exports.getLogin = (req, res) => {
   if (req.user) {
     return res.redirect("/profile");
@@ -11,6 +13,7 @@ exports.getLogin = (req, res) => {
   });
 };
 
+//login action
 exports.postLogin = async (req, res, next) => {
   const validationErrors = [];
   if (!validator.isEmail(req.body.email))
@@ -44,6 +47,7 @@ exports.postLogin = async (req, res, next) => {
   })(req, res, next);
 };
 
+//logout with redirect to home
 exports.logout = (req, res) => {
   req.logout(() => {
     console.log("User has logged out.");
@@ -56,6 +60,7 @@ exports.logout = (req, res) => {
   });
 };
 
+//signup page
 exports.getSignup = (req, res) => {
   if (req.user) {
     return res.redirect("/profile");
@@ -65,6 +70,7 @@ exports.getSignup = (req, res) => {
   });
 };
 
+//signup action
 exports.postSignup = async (req, res, next) => {
   const validationErrors = [];
   if (!validator.isEmail(req.body.email))
@@ -85,6 +91,7 @@ exports.postSignup = async (req, res, next) => {
     gmail_remove_dots: false,
   });
 
+  //checkk for exsisting user
   try {
     const existingUser = await User.findOne({
       $or: [{ email: req.body.email }, { userName: req.body.userName }],
@@ -96,7 +103,7 @@ exports.postSignup = async (req, res, next) => {
       });
       return res.redirect("../signup");
     }
-
+    
     const user = new User({
       userName: req.body.userName,
       email: req.body.email,
